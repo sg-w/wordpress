@@ -1,0 +1,20 @@
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "site.fullname" . }}-wordpress
+  labels:
+    {{- include "site.labels" . | nindent 4 }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: wordpress
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "site.fullname" . }}-wordpress
+                port:
+                  number: 80

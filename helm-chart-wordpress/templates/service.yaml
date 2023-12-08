@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "site.fullname" . }}-wordpress
+  labels:
+    {{- include "site.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.serviceWordpress.type }}
+  ports:
+    - port: {{ .Values.serviceWordpress.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "site.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "site.fullname" . }}-mysql
+  labels:
+    {{- include "site.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.serviceMysql.type }}
+  ports:
+    - port: {{ .Values.serviceMysql.port }}
+      targetPort: {{ .Values.serviceMysql.port }}
+      protocol: TCP
+      name: mysql
+  selector:
+    {{- include "site.selectorLabelsMySQL" . | nindent 4 }}

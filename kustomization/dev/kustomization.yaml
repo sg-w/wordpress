@@ -1,0 +1,8 @@
+namespace: wordpress
+namePrefix: dev-
+
+resources:
+  - ../base
+
+patchesStrategicMerge:
+- dev.limits.yaml

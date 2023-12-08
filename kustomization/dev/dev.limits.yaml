@@ -1,0 +1,18 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-deployment
+  namespace: wordpress
+spec:
+  template:
+    spec:
+      containers:
+      - name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: dev-database-service
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100M

@@ -1,0 +1,27 @@
+# Default values for site.
+
+replicaCount: 1
+
+imageWordpress:
+  repository: wordpress
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imageMysql:
+  repository: mysql
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "8"
+
+imagePullSecrets: []
+nameOverride: "dev"
+fullnameOverride: ""
+
+serviceWordpress:
+  type: ClusterIP
+  port: 80
+
+serviceMysql:
+  type: ClusterIP
+  port: 80

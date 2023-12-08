@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "site.fullname" . }}
+  labels:
+    {{- include "site.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "site.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "site.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ .Chart.Name }}-wordpress"
+          image: "{{ .Values.imageWordpress.repository }}:{{ .Values.imageWordpress.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.imageWordpress.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+          - name: WORDPRESS_DB_NAME
+            value: exampledb
+          - name: WORDPRESS_DB_USER
+            value: exampleuser
+          - name: WORDPRESS_DB_PASSWORD
+            value: examplepass
+          - name: WORDPRESS_DB_HOST
+            value: database-service
+          ports:
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "site.fullname" . }}-mysql
+  labels:
+    {{- include "site.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "site.selectorLabelsMySQL" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "site.selectorLabelsMySQL" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "{{ .Chart.Name }}-mysql"
+          image: "{{ .Values.imageMysql.repository }}:{{ .Values.imageMysql.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.imageMysql.pullPolicy }}
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          env:
+          - name: MYSQL_DATABASE
+            value: exampledb
+          - name: MYSQL_USER
+            value: exampleuser
+          - name: MYSQL_PASSWORD
+            value: examplepass
+          - name: MYSQL_RANDOM_ROOT_PASSWORD
+            value: '1'
